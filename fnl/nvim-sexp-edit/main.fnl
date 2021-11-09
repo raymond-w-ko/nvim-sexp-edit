@@ -2,7 +2,8 @@
   {autoload {a aniseed.core
              nvim aniseed.nvim
              str aniseed.string
-             util aniseed.nvim.util}
+             util aniseed.nvim.util
+             find nvim-sexp-edit.find}
    require-macros [nvim-sexp-edit.macros]})
 
 (def vim-fn-prefix "Sexpedit_")
@@ -25,58 +26,25 @@
   [(nvim.fn.line ".") (nvim.fn.col ".")])
 (create-vim-fn :current-cursor)
 
-(defn find-pair-begin [line start-x]
-  (var x -1)
-  (for [i start-x 0 -1 :until (< 0 x)]
-    (let [ch (string.sub line i i)]
-      (when (or (= ch "(") ;; )
-                (= ch "{") ;; }
-                (= ch "[") ;; ]
-                )
-        (set x i))))
-  x)
-
-(defn find-pair-end [line start-x]
-  )
-
-(defn find-pair [[cursor-y cursor-x]]
-  (var y cursor-y)
-  (var x cursor-x)
-  
-  (var begin-y -1)
-  (var begin-x -1)
-  (var done false)
-  (var reset-begin-x false)
-  (while (and (< 0 y) (not done))
-    (local line (-> (nvim.buf_get_lines 0 (a.dec y) y true)
-                    (. 1)))
-    (when reset-begin-x
-      (set begin-x (string.len line)))
-    (set begin-x (find-pair-begin line x))
-    (if (< 0 begin-x)
-      (do
-        (set done true)
-        (set begin-y y))
-      (do
-        (set done false)
-        (set reset-begin-x true)
-        (set y (a.dec y)))))
-  
-  (var end-y -1)
-  (var end-x -1)
-  
-  [[begin-y begin-x] [end-y end-x]])
-(find-pair (current-cursor))
+(defn find-pair []
+  (let [open (find.find-open)
+        open-y (. open :y)
+        open-x (. open :x)
+        close (find.find-close)
+        close-y (. close :y)
+        close-x (. close :x)]
+    [(when (and (<= 1 open-y) (<= 1 open-x))
+       [open-y open-x])
+     [(. close :y) (. close :x)]])) 
+; (find-pair [])
 
 (defn around-form [type]
-  (let [cursor (current-cursor)]
-    (find-pair cursor))
-  ; (nvim.buf_set_mark (vim.fn.bufnr) "<" (nvim.fn.line ".") 2 {})
-  ; (nvim.buf_set_mark (vim.fn.bufnr) ">" (nvim.fn.line ".") 5 {})
-  (nvim.win_set_cursor 0 [(nvim.fn.line ".") 3])
-  (nvim.ex.normal! "v")
-  (nvim.win_set_cursor 0 [(nvim.fn.line ".") 7])
-  1)
+  (let [[open close] (find-pair)]
+    (when (and open close)
+      (nvim.win_set_cursor 0 [(. open 1) (a.dec (. open 2))])
+      (nvim.ex.normal! "v")
+      (nvim.win_set_cursor 0 [(. close 1) (a.dec (. close 2))])))  
+  nil)
 (create-vim-fn :around-form)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -94,7 +62,8 @@
 (defn create-augroup []
   (augroup
    "sexp-edit"
-   (nvim.ex.autocmd "FileType" "clojure,fennel" (gen-vim-ex-call :setup-buffer))))
+   (nvim.ex.autocmd "FileType" "clojure,fennel" (gen-vim-ex-call :setup-buffer)))
+  nil)
                      
 
 (defn init []
