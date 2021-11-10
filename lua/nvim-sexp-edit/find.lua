@@ -132,10 +132,12 @@ local function forwards(state)
     return state
   end
 end
-local function find_open()
-  local _let_13_ = utils["current-cursor"]()
-  local y = _let_13_[1]
-  local x = _let_13_[2]
+local function find_open(_13_)
+  local _arg_14_ = _13_
+  local inside = _arg_14_["inside"]
+  local _let_15_ = utils["current-cursor"]()
+  local y = _let_15_[1]
+  local x = _let_15_[2]
   local state = new_state(y, x)
   local done = false
   if is_on_close_3f(state) then
@@ -156,13 +158,19 @@ local function find_open()
       backwards(state)
     end
   end
+  if inside then
+    forwards(state)
+  else
+  end
   return verify_cursor(state)
 end
 _2amodule_2a["find-open"] = find_open
-local function find_close()
-  local _let_17_ = utils["current-cursor"]()
-  local y = _let_17_[1]
-  local x = _let_17_[2]
+local function find_close(_20_)
+  local _arg_21_ = _20_
+  local inside = _arg_21_["inside"]
+  local _let_22_ = utils["current-cursor"]()
+  local y = _let_22_[1]
+  local x = _let_22_[2]
   local state = new_state(y, x)
   local done = false
   if is_on_open_3f(state) then
@@ -183,6 +191,26 @@ local function find_close()
       forwards(state)
     end
   end
+  if inside then
+    backwards(state)
+  else
+  end
   return verify_cursor(state)
 end
 _2amodule_2a["find-close"] = find_close
+local function find_pair(args)
+  local open = find_open(args)
+  local open_y = open.y
+  local open_x = open.x
+  local close = find_close(args)
+  local close_y = close.y
+  local close_x = close.x
+  local _27_
+  if ((1 <= open_y) and (1 <= open_x)) then
+    _27_ = {open_y, open_x}
+  else
+    _27_ = nil
+  end
+  return {_27_, {close.y, close.x}}
+end
+_2amodule_2a["find-pair"] = find_pair
