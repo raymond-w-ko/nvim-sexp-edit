@@ -103,7 +103,7 @@
         (tset state :x x)
         state))))
 
-(defn find-open []
+(defn find-open [{: inside}]
   (let [[y x] (utils.current-cursor)
         state (new-state y x)]
     (var done false)
@@ -119,9 +119,11 @@
       (if (< 0 (. state :imbalance))
         (set done true)
         (backwards state)))
+    (when inside
+      (forwards state))
     (verify-cursor state)))
       
-(defn find-close []
+(defn find-close [{: inside}]
   (let [[y x] (utils.current-cursor)
         state (new-state y x)]
     (var done false)
@@ -137,4 +139,17 @@
       (if (< (. state :imbalance) 0)
         (set done true)
         (forwards state)))
+    (when inside
+      (backwards state))
     (verify-cursor state)))
+
+(defn find-pair [args]
+  (let [open (find-open args)
+        open-y (. open :y)
+        open-x (. open :x)
+        close (find-close args)
+        close-y (. close :y)
+        close-x (. close :x)]
+    [(when (and (<= 1 open-y) (<= 1 open-x))
+       [open-y open-x])
+     [(. close :y) (. close :x)]]))

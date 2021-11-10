@@ -21,42 +21,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn current-cursor []
-  "(1,1)-indexed cursor"
-  [(nvim.fn.line ".") (nvim.fn.col ".")])
-(create-vim-fn :current-cursor)
-
-(defn find-pair []
-  (let [open (find.find-open)
-        open-y (. open :y)
-        open-x (. open :x)
-        close (find.find-close)
-        close-y (. close :y)
-        close-x (. close :x)]
-    [(when (and (<= 1 open-y) (<= 1 open-x))
-       [open-y open-x])
-     [(. close :y) (. close :x)]])) 
-; (find-pair [])
-
-(defn around-form [type]
-  (let [[open close] (find-pair)]
+(defn form [args]
+  (let [[open close] (find.find-pair args)]
     (when (and open close)
       (nvim.win_set_cursor 0 [(. open 1) (a.dec (. open 2))])
       (nvim.ex.normal! "v")
-      (nvim.win_set_cursor 0 [(. close 1) (a.dec (. close 2))])))  
+      (nvim.win_set_cursor 0 [(. close 1) (a.dec (. close 2))])))
   nil)
+ 
+(defn around-form [count type]
+  (form {:inside false :count count :type type}))
 (create-vim-fn :around-form)
+
+(defn in-form [count type]
+  (form {:inside true :count count :type type}))
+(create-vim-fn :in-form)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(fn ox-map [rhs fn-name]
+  (nvim.buf_set_keymap
+    0 "o" rhs (string.format ":<c-u>call %s(v:count, visualmode())<cr>" (->vim-fn-name fn-name))
+    {:noremap true :silent false})
+  (nvim.buf_set_keymap
+    0 "x" rhs (string.format ":<c-u>call %s(v:count ,visualmode())<cr>" (->vim-fn-name fn-name))
+    {:noremap true :silent false}))
+
 (defn setup-buffer []
-  (nvim.buf_set_keymap
-    0 "o" "af" (string.format ":<c-u>call %s()<cr>" (->vim-fn-name :around-form))
-    {:noremap true :silent false})
-  (nvim.buf_set_keymap
-    0 "x" "af" (string.format ":<c-u>call %s(visualmode())<cr>" (->vim-fn-name :around-form))
-    {:noremap true :silent false})
-  nil)
+  (ox-map "af" :around-form)
+  (ox-map "if" :in-form))
 (create-vim-fn :setup-buffer)
 
 (defn create-augroup []
