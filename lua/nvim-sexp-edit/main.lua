@@ -64,7 +64,12 @@ local function ox_map(rhs, fn_name)
 end
 local function setup_buffer()
   ox_map("af", "around-form")
-  return ox_map("if", "in-form")
+  ox_map("if", "in-form")
+  nvim.buf_set_keymap(0, "i", "(", "()<c-g>U<Left>", {noremap = true, silent = true})
+  nvim.buf_set_keymap(0, "i", "[", "[]<c-g>U<Left>", {noremap = true, silent = true})
+  nvim.buf_set_keymap(0, "i", "{", "{}<c-g>U<Left>", {noremap = true, silent = true})
+  nvim.buf_set_keymap(0, "i", "\"", "\"\"<c-g>U<Left>", {noremap = true, silent = true})
+  return nil
 end
 _2amodule_2a["setup-buffer"] = setup_buffer
 create_vim_fn("setup-buffer")

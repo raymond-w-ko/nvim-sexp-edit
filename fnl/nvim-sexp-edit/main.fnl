@@ -49,7 +49,12 @@
 
 (defn setup-buffer []
   (ox-map "af" :around-form)
-  (ox-map "if" :in-form))
+  (ox-map "if" :in-form)
+  (nvim.buf_set_keymap 0 "i" "(" "()<c-g>U<Left>" {:noremap true :silent true})
+  (nvim.buf_set_keymap 0 "i" "[" "[]<c-g>U<Left>" {:noremap true :silent true})
+  (nvim.buf_set_keymap 0 "i" "{" "{}<c-g>U<Left>" {:noremap true :silent true})
+  (nvim.buf_set_keymap 0 "i" "\"" "\"\"<c-g>U<Left>" {:noremap true :silent true})
+  nil)
 (create-vim-fn :setup-buffer)
 
 (defn create-augroup []
@@ -58,7 +63,6 @@
    (nvim.ex.autocmd "FileType" "clojure,fennel" (gen-vim-ex-call :setup-buffer)))
   nil)
                      
-
 (defn init []
   (create-augroup))
 (init)
