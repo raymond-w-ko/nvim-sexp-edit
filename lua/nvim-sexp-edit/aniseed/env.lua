@@ -49,7 +49,7 @@ local function init(opts)
     if fs["macro-file-path?"](path) then
       return path
     else
-      return string.gsub(path, ".fnl$", ".lua")
+      return string.gsub(path, "..fnl$", "..lua")
     end
   end
   if (((false ~= opts0.compile) or os.getenv("ANISEED_ENV_COMPILE")) and fs["glob-dir-newer?"](fnl_dir, lua_dir, glob_expr, _5_)) then

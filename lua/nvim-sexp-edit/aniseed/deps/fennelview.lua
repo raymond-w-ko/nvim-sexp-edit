@@ -350,7 +350,7 @@ local function pp_table(x, options, indent)
   return x0
 end
 local function number__3estring(n)
-  local _2_0 = string.gsub(tostring(n), ",", ".")
+  local _2_0 = string.gsub(tostring(n), ",", "..")
   return _2_0
 end
 local function colon_string_3f(s)
