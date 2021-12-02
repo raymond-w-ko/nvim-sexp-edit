@@ -148,12 +148,8 @@ local function parse_root_form()
       local ch = get_char(state)
       if (ch == "\\") then
         forwards(state)
-        forwards(state)
-      else
-      end
-      if (ch == "\"") then
+      elseif (ch == "\"") then
         node["end"] = {state.y, state.x}
-        forwards(state)
         done = true
       else
       end
@@ -161,9 +157,9 @@ local function parse_root_form()
     return nil
   end
   local function read_form()
-    local _let_16_ = state
-    local y = _let_16_["y"]
-    local x = _let_16_["x"]
+    local _let_15_ = state
+    local y = _let_15_["y"]
+    local x = _let_15_["x"]
     local open_char = get_char(state)
     local close_char = complement_chars[open_char]
     local node = {begin = {y, x}, type = "form", ["open-char"] = open_char, ["close-char"] = close_char}
@@ -193,9 +189,6 @@ local function parse_root_form()
     local ch = get_char(state)
     dispatch[ch]()
   end
-  print(nodes)
   return nodes
 end
 _2amodule_2a["parse-root-form"] = parse_root_form
---[[ "str\"ing" (parse-root-form) ]]--
-return nil
