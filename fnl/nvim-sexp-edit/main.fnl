@@ -3,7 +3,8 @@
              nvim aniseed.nvim
              str aniseed.string
              util aniseed.nvim.util
-             find nvim-sexp-edit.find}
+             find nvim-sexp-edit.find
+             parse nvim-sexp-edit.parse}
    require-macros [nvim-sexp-edit.macros]})
 
 (def vim-fn-prefix "Sexpedit_")

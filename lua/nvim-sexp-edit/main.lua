@@ -11,10 +11,11 @@ do
   _2amodule_locals_2a = (_2amodule_2a)["aniseed/locals"]
 end
 local autoload = (require("nvim-sexp-edit.aniseed.autoload")).autoload
-local a, find, nvim, str, util, _ = autoload("nvim-sexp-edit.aniseed.core"), autoload("nvim-sexp-edit.find"), autoload("nvim-sexp-edit.aniseed.nvim"), autoload("nvim-sexp-edit.aniseed.string"), autoload("nvim-sexp-edit.aniseed.nvim.util"), nil
+local a, find, nvim, parse, str, util, _ = autoload("nvim-sexp-edit.aniseed.core"), autoload("nvim-sexp-edit.find"), autoload("nvim-sexp-edit.aniseed.nvim"), autoload("nvim-sexp-edit.parse"), autoload("nvim-sexp-edit.aniseed.string"), autoload("nvim-sexp-edit.aniseed.nvim.util"), nil
 _2amodule_locals_2a["a"] = a
 _2amodule_locals_2a["find"] = find
 _2amodule_locals_2a["nvim"] = nvim
+_2amodule_locals_2a["parse"] = parse
 _2amodule_locals_2a["str"] = str
 _2amodule_locals_2a["util"] = util
 _2amodule_locals_2a["_"] = _
