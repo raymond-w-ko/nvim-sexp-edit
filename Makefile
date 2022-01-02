@@ -10,5 +10,4 @@ compile:
 	deps/aniseed/scripts/embed.sh aniseed nvim-sexp-edit
 
 test:
-	# rm -rf test/lua
 	deps/aniseed/scripts/test.sh
