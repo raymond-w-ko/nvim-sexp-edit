@@ -4,7 +4,7 @@
              str aniseed.string
              util aniseed.nvim.util
              find nvim-sexp-edit.find
-             parse nvim-sexp-edit.parse}
+             seek nvim-sexp-edit.seek}
    require-macros [nvim-sexp-edit.macros]})
 
 (def vim-fn-prefix "Sexpedit_")
@@ -22,35 +22,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn form [args]
-  (let [[open close] (find.find-pair args)]
-    (when (and open close)
-      (nvim.win_set_cursor 0 [(. open 1) (a.dec (. open 2))])
+(defn visually-select [f args]
+  (let [{: mode} (nvim.get_mode)
+        [begin end] (f)]
+    (when (and begin end)
+      (when (= mode "v") (nvim.ex.normal! "v"))
+      (nvim.win_set_cursor 0 [(. begin 1) (a.dec (. begin 2))])
       (nvim.ex.normal! "v")
-      (nvim.win_set_cursor 0 [(. close 1) (a.dec (. close 2))])))
+      (nvim.win_set_cursor 0 [(. end 1) (a.dec (. end 2))])))
   nil)
  
-(defn around-form [count type]
-  (form {:inside false :count count :type type}))
-(create-vim-fn :around-form)
-
-(defn in-form [count type]
-  (form {:inside true :count count :type type}))
-(create-vim-fn :in-form)
+(defn around-form []
+  (visually-select seek.seek-current-form-boundaries {:inside false}))
+(defn in-form []
+  (visually-select seek.seek-current-form-boundaries {:inside true}))
+(defn around-element []
+  (visually-select seek.seek-current-element-boundaries {:inside false}))
+(defn in-element []
+  (visually-select seek.seek-current-element-boundaries {:inside true}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(fn ox-map [rhs fn-name]
-  (nvim.buf_set_keymap
-    0 "o" rhs (string.format ":<c-u>call %s(v:count, visualmode())<cr>" (->vim-fn-name fn-name))
-    {:noremap true :silent false})
-  (nvim.buf_set_keymap
-    0 "x" rhs (string.format ":<c-u>call %s(v:count ,visualmode())<cr>" (->vim-fn-name fn-name))
-    {:noremap true :silent false}))
-
 (defn setup-buffer []
-  (ox-map "af" :around-form)
-  (ox-map "if" :in-form)
+  (vim.keymap.set ["o" "x"] "af" around-form {:buffer 0})
+  (vim.keymap.set ["o" "x"] "if" in-form {:buffer 0})
+  (vim.keymap.set ["o" "x"] "ae" around-element {:buffer 0})
+  (vim.keymap.set ["o" "x"] "ie" in-element {:buffer 0})
+  
   (nvim.buf_set_keymap 0 "i" "(" "()<c-g>U<Left>" {:noremap true :silent true})
   (nvim.buf_set_keymap 0 "i" "[" "[]<c-g>U<Left>" {:noremap true :silent true})
   (nvim.buf_set_keymap 0 "i" "{" "{}<c-g>U<Left>" {:noremap true :silent true})
