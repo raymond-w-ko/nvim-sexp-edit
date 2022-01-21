@@ -11,11 +11,11 @@ do
   _2amodule_locals_2a = (_2amodule_2a)["aniseed/locals"]
 end
 local autoload = (require("nvim-sexp-edit.aniseed.autoload")).autoload
-local a, find, nvim, parse, str, util, _ = autoload("nvim-sexp-edit.aniseed.core"), autoload("nvim-sexp-edit.find"), autoload("nvim-sexp-edit.aniseed.nvim"), autoload("nvim-sexp-edit.parse"), autoload("nvim-sexp-edit.aniseed.string"), autoload("nvim-sexp-edit.aniseed.nvim.util"), nil
+local a, find, nvim, seek, str, util, _ = autoload("nvim-sexp-edit.aniseed.core"), autoload("nvim-sexp-edit.find"), autoload("nvim-sexp-edit.aniseed.nvim"), autoload("nvim-sexp-edit.seek"), autoload("nvim-sexp-edit.aniseed.string"), autoload("nvim-sexp-edit.aniseed.nvim.util"), nil
 _2amodule_locals_2a["a"] = a
 _2amodule_locals_2a["find"] = find
 _2amodule_locals_2a["nvim"] = nvim
-_2amodule_locals_2a["parse"] = parse
+_2amodule_locals_2a["seek"] = seek
 _2amodule_locals_2a["str"] = str
 _2amodule_locals_2a["util"] = util
 _2amodule_locals_2a["_"] = _
@@ -36,36 +36,36 @@ end
 _2amodule_2a["gen-vim-ex-call"] = gen_vim_ex_call
 local function form(args)
   do
-    local _let_1_ = find["find-pair"](args)
-    local open = _let_1_[1]
-    local close = _let_1_[2]
-    if (open and close) then
-      nvim.win_set_cursor(0, {open[1], a.dec(open[2])})
+    local _let_1_ = nvim.get_mode()
+    local mode = _let_1_["mode"]
+    local _let_2_ = seek["seek-current-form-boundaries"]()
+    local begin = _let_2_[1]
+    local _end = _let_2_[2]
+    if (begin and _end) then
+      if (mode == "v") then
+        nvim.ex["normal!"]("v")
+      else
+      end
+      nvim.win_set_cursor(0, {begin[1], a.dec(begin[2])})
       nvim.ex["normal!"]("v")
-      nvim.win_set_cursor(0, {close[1], a.dec(close[2])})
+      nvim.win_set_cursor(0, {_end[1], a.dec(_end[2])})
     else
     end
   end
   return nil
 end
 _2amodule_2a["form"] = form
-local function around_form(count, type)
-  return form({inside = false, count = count, type = type})
+local function around_form()
+  return form({inside = false})
 end
 _2amodule_2a["around-form"] = around_form
-create_vim_fn("around-form")
-local function in_form(count, type)
-  return form({inside = true, count = count, type = type})
+local function in_form()
+  return form({inside = true})
 end
 _2amodule_2a["in-form"] = in_form
-create_vim_fn("in-form")
-local function ox_map(rhs, fn_name)
-  nvim.buf_set_keymap(0, "o", rhs, string.format(":<c-u>call %s(v:count, visualmode())<cr>", __3evim_fn_name(fn_name)), {noremap = true, silent = false})
-  return nvim.buf_set_keymap(0, "x", rhs, string.format(":<c-u>call %s(v:count ,visualmode())<cr>", __3evim_fn_name(fn_name)), {noremap = true, silent = false})
-end
 local function setup_buffer()
-  ox_map("af", "around-form")
-  ox_map("if", "in-form")
+  vim.keymap.set({"o", "x"}, "af", around_form, {buffer = 0})
+  vim.keymap.set({"o", "x"}, "if", in_form, {buffer = 0})
   nvim.buf_set_keymap(0, "i", "(", "()<c-g>U<Left>", {noremap = true, silent = true})
   nvim.buf_set_keymap(0, "i", "[", "[]<c-g>U<Left>", {noremap = true, silent = true})
   nvim.buf_set_keymap(0, "i", "{", "{}<c-g>U<Left>", {noremap = true, silent = true})
