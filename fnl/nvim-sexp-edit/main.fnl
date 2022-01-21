@@ -22,24 +22,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn visually-select [f args]
+(defn visually-select [f {: inside}]
   (let [{: mode} (nvim.get_mode)
         [begin end] (f)]
     (when (and begin end)
       (when (= mode "v") (nvim.ex.normal! "v"))
-      (nvim.win_set_cursor 0 [(. begin 1) (a.dec (. begin 2))])
+      (let [x (a.dec (. begin 2))
+            x (if inside (a.inc x) x)]
+        (nvim.win_set_cursor 0 [(. begin 1) x]))
       (nvim.ex.normal! "v")
-      (nvim.win_set_cursor 0 [(. end 1) (a.dec (. end 2))])))
+      (let [x (a.dec (. end 2))
+            x (if inside (a.dec x) x)]
+        (nvim.win_set_cursor 0 [(. end 1) x]))))
   nil)
  
 (defn around-form []
-  (visually-select seek.seek-current-form-boundaries {:inside false}))
+  (visually-select seek.current-form-boundaries {:inside false}))
 (defn in-form []
-  (visually-select seek.seek-current-form-boundaries {:inside true}))
+  (visually-select seek.current-form-boundaries {:inside true}))
 (defn around-element []
-  (visually-select seek.seek-current-element-boundaries {:inside false}))
+  (visually-select seek.current-element-boundaries {:inside false}))
 (defn in-element []
-  (visually-select seek.seek-current-element-boundaries {:inside true}))
+  (visually-select seek.current-element-boundaries {:inside true}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -48,6 +52,8 @@
   (vim.keymap.set ["o" "x"] "if" in-form {:buffer 0})
   (vim.keymap.set ["o" "x"] "ae" around-element {:buffer 0})
   (vim.keymap.set ["o" "x"] "ie" in-element {:buffer 0})
+  (vim.keymap.set ["o" "x"] "as" around-element {:buffer 0})
+  (vim.keymap.set ["o" "x"] "is" in-element {:buffer 0})
   
   (nvim.buf_set_keymap 0 "i" "(" "()<c-g>U<Left>" {:noremap true :silent true})
   (nvim.buf_set_keymap 0 "i" "[" "[]<c-g>U<Left>" {:noremap true :silent true})

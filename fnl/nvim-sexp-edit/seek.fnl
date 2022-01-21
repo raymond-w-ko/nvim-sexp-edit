@@ -8,7 +8,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn seek-current-node-of-type [target-type]
+(defn current-node-of-type [target-type]
   (let [nodes (->> (parse.parse-root-form)
                    (a.filter (fn [{: type}] (= type target-type))))
         [y x] (utils.current-cursor)]
@@ -24,10 +24,10 @@
     (nvim.print candidate)
     candidate))
 
-(defn seek-current-form-boundaries []
-  (let [{: begin : end} (seek-current-node-of-type :form)]
+(defn current-form-boundaries []
+  (let [{: begin : end} (current-node-of-type :form)]
     [begin end]))
 
-(defn seek-current-element-boundaries []
-  (let [{: begin : end} (seek-current-node-of-type :element)]
+(defn current-element-boundaries []
+  (let [{: begin : end} (current-node-of-type :element)]
     [begin end]))
