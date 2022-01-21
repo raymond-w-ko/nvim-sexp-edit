@@ -34,38 +34,66 @@ local function gen_vim_ex_call(fn_name)
   return string.format("call %s()", __3evim_fn_name(fn_name))
 end
 _2amodule_2a["gen-vim-ex-call"] = gen_vim_ex_call
-local function form(args)
+local function visually_select(f, _1_)
+  local _arg_2_ = _1_
+  local inside = _arg_2_["inside"]
   do
-    local _let_1_ = nvim.get_mode()
-    local mode = _let_1_["mode"]
-    local _let_2_ = seek["seek-current-form-boundaries"]()
-    local begin = _let_2_[1]
-    local _end = _let_2_[2]
+    local _let_3_ = nvim.get_mode()
+    local mode = _let_3_["mode"]
+    local _let_4_ = f()
+    local begin = _let_4_[1]
+    local _end = _let_4_[2]
     if (begin and _end) then
       if (mode == "v") then
         nvim.ex["normal!"]("v")
       else
       end
-      nvim.win_set_cursor(0, {begin[1], a.dec(begin[2])})
+      do
+        local x = a.dec(begin[2])
+        local x0
+        if inside then
+          x0 = a.inc(x)
+        else
+          x0 = x
+        end
+        nvim.win_set_cursor(0, {begin[1], x0})
+      end
       nvim.ex["normal!"]("v")
-      nvim.win_set_cursor(0, {_end[1], a.dec(_end[2])})
+      local x = a.dec(_end[2])
+      local x0
+      if inside then
+        x0 = a.dec(x)
+      else
+        x0 = x
+      end
+      nvim.win_set_cursor(0, {_end[1], x0})
     else
     end
   end
   return nil
 end
-_2amodule_2a["form"] = form
+_2amodule_2a["visually-select"] = visually_select
 local function around_form()
-  return form({inside = false})
+  return visually_select(seek["current-form-boundaries"], {inside = false})
 end
 _2amodule_2a["around-form"] = around_form
 local function in_form()
-  return form({inside = true})
+  return visually_select(seek["current-form-boundaries"], {inside = true})
 end
 _2amodule_2a["in-form"] = in_form
+local function around_element()
+  return visually_select(seek["current-element-boundaries"], {inside = false})
+end
+_2amodule_2a["around-element"] = around_element
+local function in_element()
+  return visually_select(seek["current-element-boundaries"], {inside = true})
+end
+_2amodule_2a["in-element"] = in_element
 local function setup_buffer()
   vim.keymap.set({"o", "x"}, "af", around_form, {buffer = 0})
   vim.keymap.set({"o", "x"}, "if", in_form, {buffer = 0})
+  vim.keymap.set({"o", "x"}, "ae", around_element, {buffer = 0})
+  vim.keymap.set({"o", "x"}, "ie", in_element, {buffer = 0})
   nvim.buf_set_keymap(0, "i", "(", "()<c-g>U<Left>", {noremap = true, silent = true})
   nvim.buf_set_keymap(0, "i", "[", "[]<c-g>U<Left>", {noremap = true, silent = true})
   nvim.buf_set_keymap(0, "i", "{", "{}<c-g>U<Left>", {noremap = true, silent = true})

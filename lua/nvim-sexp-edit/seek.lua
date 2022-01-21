@@ -18,12 +18,12 @@ _2amodule_locals_2a["parse"] = parse
 _2amodule_locals_2a["str"] = str
 _2amodule_locals_2a["utils"] = utils
 _2amodule_locals_2a["_"] = _
-local function seek_current_form()
+local function current_node_of_type(target_type)
   local nodes
   local function _3_(_1_)
     local _arg_2_ = _1_
     local type = _arg_2_["type"]
-    return (type == "form")
+    return (type == target_type)
   end
   nodes = a.filter(_3_, parse["parse-root-form"]())
   local _let_4_ = utils["current-cursor"]()
@@ -36,19 +36,27 @@ local function seek_current_form()
     local _let_5_ = node
     local begin = _let_5_["begin"]
     local _end = _let_5_["end"]
-    if ((begin[1] <= y) and (begin[2] <= x)) then
+    if ((begin[1] < y) or ((begin[1] == y) and (begin[2] <= x))) then
       candidate = node
     else
       done = true
     end
   end
+  nvim.print(candidate)
   return candidate
 end
-_2amodule_2a["seek-current-form"] = seek_current_form
-local function seek_current_form_boundaries()
-  local _let_7_ = seek_current_form()
+_2amodule_2a["current-node-of-type"] = current_node_of_type
+local function current_form_boundaries()
+  local _let_7_ = current_node_of_type("form")
   local begin = _let_7_["begin"]
   local _end = _let_7_["end"]
   return {begin, _end}
 end
-_2amodule_2a["seek-current-form-boundaries"] = seek_current_form_boundaries
+_2amodule_2a["current-form-boundaries"] = current_form_boundaries
+local function current_element_boundaries()
+  local _let_8_ = current_node_of_type("element")
+  local begin = _let_8_["begin"]
+  local _end = _let_8_["end"]
+  return {begin, _end}
+end
+_2amodule_2a["current-element-boundaries"] = current_element_boundaries
