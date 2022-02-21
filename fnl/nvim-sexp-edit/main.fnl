@@ -65,12 +65,12 @@
     (let [[y x] begin] (add-char y (a.dec x) begin-ch))
     [begin end]))
 
-(defn paren-wrap-list [] (form-wrap "(" ")"))
-(defn brace-wrap-list [] (form-wrap "[" "]"))
-(defn curly-wrap-list [] (form-wrap "{" "}"))
-(defn paren-wrap-elem [] (elem-wrap "(" ")"))
-(defn brace-wrap-elem [] (elem-wrap "[" "]"))
-(defn curly-wrap-elem [] (elem-wrap "{" "}"))
+(defn paren-wrap-list [] (form-wrap "( " ")"))
+(defn brace-wrap-list [] (form-wrap "[ " "]"))
+(defn curly-wrap-list [] (form-wrap "{ " "}"))
+(defn paren-wrap-elem [] (elem-wrap "( " ")"))
+(defn brace-wrap-elem [] (elem-wrap "[ " "]"))
+(defn curly-wrap-elem [] (elem-wrap "{ " "}"))
 
 (defn jump-to-head [boundary]
   (let [[begin _] boundary
