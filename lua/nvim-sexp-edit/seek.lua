@@ -36,27 +36,29 @@ local function current_node_of_type(target_type)
     local _let_5_ = node
     local begin = _let_5_["begin"]
     local _end = _let_5_["end"]
-    if ((begin[1] < y) or ((begin[1] == y) and (begin[2] <= x))) then
+    if (((begin[1] < y) or ((begin[1] == y) and (begin[2] <= x))) and ((_end[1] > y) or ((_end[1] == y) and (_end[2] >= x)))) then
       candidate = node
     else
+    end
+    if (begin[1] > y) then
       done = true
+    else
     end
   end
-  nvim.print(candidate)
   return candidate
 end
 _2amodule_2a["current-node-of-type"] = current_node_of_type
 local function current_form_boundaries()
-  local _let_7_ = current_node_of_type("form")
-  local begin = _let_7_["begin"]
-  local _end = _let_7_["end"]
+  local _let_8_ = current_node_of_type("form")
+  local begin = _let_8_["begin"]
+  local _end = _let_8_["end"]
   return {begin, _end}
 end
 _2amodule_2a["current-form-boundaries"] = current_form_boundaries
 local function current_element_boundaries()
-  local _let_8_ = current_node_of_type("element")
-  local begin = _let_8_["begin"]
-  local _end = _let_8_["end"]
+  local _let_9_ = current_node_of_type("element")
+  local begin = _let_9_["begin"]
+  local _end = _let_9_["end"]
   return {begin, _end}
 end
 _2amodule_2a["current-element-boundaries"] = current_element_boundaries

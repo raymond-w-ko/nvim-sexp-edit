@@ -86,9 +86,149 @@ local function around_element()
 end
 _2amodule_2a["around-element"] = around_element
 local function in_element()
-  return visually_select(seek["current-element-boundaries"], {inside = true})
+  return visually_select(seek["current-element-boundaries"], {inside = false})
 end
 _2amodule_2a["in-element"] = in_element
+local function add_char(y, x, ch)
+  local lines = nvim.buf_get_lines(0, a.dec(y), y, true)
+  local line = lines[1]
+  local line0 = (line:sub(1, x) .. ch .. line:sub(a.inc(x)))
+  return nvim.buf_set_lines(0, a.dec(y), y, true, {line0})
+end
+_2amodule_2a["add-char"] = add_char
+local function form_wrap(begin_ch, end_ch)
+  local _let_9_ = seek["current-form-boundaries"]()
+  local begin = _let_9_[1]
+  local _end = _let_9_[2]
+  do
+    local _let_10_ = _end
+    local y = _let_10_[1]
+    local x = _let_10_[2]
+    add_char(y, x, end_ch)
+  end
+  do
+    local _let_11_ = begin
+    local y = _let_11_[1]
+    local x = _let_11_[2]
+    add_char(y, a.dec(x), begin_ch)
+  end
+  return {begin, _end}
+end
+_2amodule_2a["form-wrap"] = form_wrap
+local function elem_wrap(begin_ch, end_ch)
+  local _let_12_ = seek["current-element-boundaries"]()
+  local begin = _let_12_[1]
+  local _end = _let_12_[2]
+  do
+    local _let_13_ = _end
+    local y = _let_13_[1]
+    local x = _let_13_[2]
+    add_char(y, x, end_ch)
+  end
+  do
+    local _let_14_ = begin
+    local y = _let_14_[1]
+    local x = _let_14_[2]
+    add_char(y, a.dec(x), begin_ch)
+  end
+  return {begin, _end}
+end
+_2amodule_2a["elem-wrap"] = elem_wrap
+local function paren_wrap_list()
+  return form_wrap("(", ")")
+end
+_2amodule_2a["paren-wrap-list"] = paren_wrap_list
+local function brace_wrap_list()
+  return form_wrap("[", "]")
+end
+_2amodule_2a["brace-wrap-list"] = brace_wrap_list
+local function curly_wrap_list()
+  return form_wrap("{", "}")
+end
+_2amodule_2a["curly-wrap-list"] = curly_wrap_list
+local function paren_wrap_elem()
+  return elem_wrap("(", ")")
+end
+_2amodule_2a["paren-wrap-elem"] = paren_wrap_elem
+local function brace_wrap_elem()
+  return elem_wrap("[", "]")
+end
+_2amodule_2a["brace-wrap-elem"] = brace_wrap_elem
+local function curly_wrap_elem()
+  return elem_wrap("{", "}")
+end
+_2amodule_2a["curly-wrap-elem"] = curly_wrap_elem
+local function jump_to_head(boundary)
+  local _let_15_ = boundary
+  local begin = _let_15_[1]
+  local _0 = _let_15_[2]
+  local _let_16_ = begin
+  local y = _let_16_[1]
+  local x = _let_16_[2]
+  nvim.win_set_cursor(0, {y, x})
+  return nvim.ex.startinsert()
+end
+_2amodule_2a["jump-to-head"] = jump_to_head
+local function jump_to_tail(boundary)
+  local _let_17_ = boundary
+  local _0 = _let_17_[1]
+  local _end = _let_17_[2]
+  local _let_18_ = _end
+  local y = _let_18_[1]
+  local x = _let_18_[2]
+  local x0 = a.inc(x)
+  nvim.win_set_cursor(0, {y, x0})
+  return nvim.ex.startinsert()
+end
+_2amodule_2a["jump-to-tail"] = jump_to_tail
+local function paren_head_wrap_list()
+  return jump_to_head(paren_wrap_list())
+end
+_2amodule_2a["paren-head-wrap-list"] = paren_head_wrap_list
+local function paren_tail_wrap_list()
+  return jump_to_tail(paren_wrap_list())
+end
+_2amodule_2a["paren-tail-wrap-list"] = paren_tail_wrap_list
+local function brace_head_wrap_list()
+  return jump_to_head(brace_wrap_list())
+end
+_2amodule_2a["brace-head-wrap-list"] = brace_head_wrap_list
+local function brace_tail_wrap_list()
+  return jump_to_tail(brace_wrap_list())
+end
+_2amodule_2a["brace-tail-wrap-list"] = brace_tail_wrap_list
+local function curly_head_wrap_list()
+  return jump_to_head(curly_wrap_list())
+end
+_2amodule_2a["curly-head-wrap-list"] = curly_head_wrap_list
+local function curly_tail_wrap_list()
+  return jump_to_tail(curly_wrap_list())
+end
+_2amodule_2a["curly-tail-wrap-list"] = curly_tail_wrap_list
+local function paren_head_wrap_elem()
+  return jump_to_head(paren_wrap_elem())
+end
+_2amodule_2a["paren-head-wrap-elem"] = paren_head_wrap_elem
+local function paren_tail_wrap_elem()
+  return jump_to_tail(paren_wrap_elem())
+end
+_2amodule_2a["paren-tail-wrap-elem"] = paren_tail_wrap_elem
+local function brace_head_wrap_elem()
+  return jump_to_head(brace_wrap_elem())
+end
+_2amodule_2a["brace-head-wrap-elem"] = brace_head_wrap_elem
+local function brace_tail_wrap_elem()
+  return jump_to_tail(brace_wrap_elem())
+end
+_2amodule_2a["brace-tail-wrap-elem"] = brace_tail_wrap_elem
+local function curly_head_wrap_elem()
+  return jump_to_head(curly_wrap_elem())
+end
+_2amodule_2a["curly-head-wrap-elem"] = curly_head_wrap_elem
+local function curly_tail_wrap_elem()
+  return jump_to_tail(curly_wrap_elem())
+end
+_2amodule_2a["curly-tail-wrap-elem"] = curly_tail_wrap_elem
 local function setup_buffer()
   vim.keymap.set({"o", "x"}, "af", around_form, {buffer = 0})
   vim.keymap.set({"o", "x"}, "if", in_form, {buffer = 0})
@@ -96,6 +236,25 @@ local function setup_buffer()
   vim.keymap.set({"o", "x"}, "ie", in_element, {buffer = 0})
   vim.keymap.set({"o", "x"}, "as", around_element, {buffer = 0})
   vim.keymap.set({"o", "x"}, "is", in_element, {buffer = 0})
+  do
+    local map
+    local function _19_(lhs, rhs)
+      return vim.keymap.set("n", lhs, rhs, {buffer = 0})
+    end
+    map = _19_
+    map("<localleader>i", paren_head_wrap_list)
+    map("<localleader>I", paren_tail_wrap_list)
+    map("<localleader>[", brace_head_wrap_list)
+    map("<localleader>]", brace_tail_wrap_list)
+    map("<localleader>{", curly_head_wrap_list)
+    map("<localleader>}", curly_tail_wrap_list)
+    map("<localleader>W", paren_head_wrap_elem)
+    map("<localleader>w", paren_tail_wrap_elem)
+    map("<localleader>e[", brace_head_wrap_elem)
+    map("<localleader>e]", brace_tail_wrap_elem)
+    map("<localleader>e{", curly_head_wrap_elem)
+    map("<localleader>e}", curly_tail_wrap_elem)
+  end
   nvim.buf_set_keymap(0, "i", "(", "()<c-g>U<Left>", {noremap = true, silent = true})
   nvim.buf_set_keymap(0, "i", "[", "[]<c-g>U<Left>", {noremap = true, silent = true})
   nvim.buf_set_keymap(0, "i", "{", "{}<c-g>U<Left>", {noremap = true, silent = true})
