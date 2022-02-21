@@ -82,9 +82,11 @@
         state))))
 
 (defn is-root-form-begin-line? [state]
-  (let [line (get-line state)]
-    (= "(" (string.sub line 1 1))))
-  
+  (let [line (get-line state)
+        ch (string.sub line 1 1)]
+    (or (= ch "(")
+        (= ch "{"))))
+
 (defn is-whitespace-char? [ch]
   (. whitespace-chars ch))
 
