@@ -135,27 +135,27 @@ local function elem_wrap(begin_ch, end_ch)
 end
 _2amodule_2a["elem-wrap"] = elem_wrap
 local function paren_wrap_list()
-  return form_wrap("(", ")")
+  return form_wrap("( ", ")")
 end
 _2amodule_2a["paren-wrap-list"] = paren_wrap_list
 local function brace_wrap_list()
-  return form_wrap("[", "]")
+  return form_wrap("[ ", "]")
 end
 _2amodule_2a["brace-wrap-list"] = brace_wrap_list
 local function curly_wrap_list()
-  return form_wrap("{", "}")
+  return form_wrap("{ ", "}")
 end
 _2amodule_2a["curly-wrap-list"] = curly_wrap_list
 local function paren_wrap_elem()
-  return elem_wrap("(", ")")
+  return elem_wrap("( ", ")")
 end
 _2amodule_2a["paren-wrap-elem"] = paren_wrap_elem
 local function brace_wrap_elem()
-  return elem_wrap("[", "]")
+  return elem_wrap("[ ", "]")
 end
 _2amodule_2a["brace-wrap-elem"] = brace_wrap_elem
 local function curly_wrap_elem()
-  return elem_wrap("{", "}")
+  return elem_wrap("{ ", "}")
 end
 _2amodule_2a["curly-wrap-elem"] = curly_wrap_elem
 local function jump_to_head(boundary)
