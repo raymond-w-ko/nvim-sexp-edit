@@ -17,11 +17,15 @@
     (var candidate nil)
     (each [i node (ipairs nodes) :until done]
       (let [{: begin : end} node]
-        (if (or (< (. begin 1) y)
-                (and (= (. begin 1) y) (<= (. begin 2) x)))
-          (set candidate node)
+        (when (and (or (< (. begin 1) y)
+                       (and (= (. begin 1) y) (<= (. begin 2) x)))
+                   (or (> (. end 1) y)
+                       (and (= (. end 1) y) (>= (. end 2) x)))) 
+          (set candidate node))
+        (when (> (. begin 1) y)
           (set done true))))
-    (nvim.print candidate)
+    ; (nvim.print nodes)
+    ; (nvim.print candidate)
     candidate))
 
 (defn current-form-boundaries []
