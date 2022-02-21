@@ -120,4 +120,5 @@ local function init()
   return create_augroup()
 end
 _2amodule_2a["init"] = init
-return init()
+init()
+return _2amodule_2a

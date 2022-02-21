@@ -60,3 +60,4 @@ local function current_element_boundaries()
   return {begin, _end}
 end
 _2amodule_2a["current-element-boundaries"] = current_element_boundaries
+return _2amodule_2a

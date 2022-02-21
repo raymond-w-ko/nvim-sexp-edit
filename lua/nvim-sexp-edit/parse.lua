@@ -98,7 +98,8 @@ local function forwards(state)
 end
 local function is_root_form_begin_line_3f(state)
   local line = get_line(state)
-  return ("(" == string.sub(line, 1, 1))
+  local ch = string.sub(line, 1, 1)
+  return ((ch == "(") or (ch == "{"))
 end
 _2amodule_2a["is-root-form-begin-line?"] = is_root_form_begin_line_3f
 local function is_whitespace_char_3f(ch)
@@ -192,3 +193,4 @@ local function parse_root_form()
   return nodes
 end
 _2amodule_2a["parse-root-form"] = parse_root_form
+return _2amodule_2a

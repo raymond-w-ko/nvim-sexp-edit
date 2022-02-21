@@ -20,3 +20,4 @@ local function current_cursor()
   return {nvim.fn.line("."), nvim.fn.col(".")}
 end
 _2amodule_2a["current-cursor"] = current_cursor
+return _2amodule_2a
