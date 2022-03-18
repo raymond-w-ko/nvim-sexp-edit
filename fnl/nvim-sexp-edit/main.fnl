@@ -12,7 +12,7 @@
 (defn ->vim-fn-name [fn-name]
   (-> (.. vim-fn-prefix fn-name)
       (string.gsub "-" "_")))
-      
+
 (defn create-vim-fn [fn-name]
   (let [vim-fn-name (->vim-fn-name fn-name)]
     (util.fn-bridge vim-fn-name :nvim-sexp-edit.main fn-name)))
@@ -24,15 +24,19 @@
 
 (defn visually-select [f {: inside}]
   (let [{: mode} (nvim.get_mode)
-        [begin end] (f)]
+        [begin end subtype] (f)]
     (when (and begin end)
       (when (= mode "v") (nvim.ex.normal! "v"))
       (let [x (a.dec (. begin 2))
-            x (if inside (a.inc x) x)]
+            x (if (and inside (= subtype :string))
+                (a.inc x)
+                x)]
         (nvim.win_set_cursor 0 [(. begin 1) x]))
       (nvim.ex.normal! "v")
       (let [x (a.dec (. end 2))
-            x (if inside (a.dec x) x)]
+            x (if (and inside (= subtype :string))
+                (a.dec x)
+                x)]
         (nvim.win_set_cursor 0 [(. end 1) x]))))
   nil)
  
@@ -43,7 +47,7 @@
 (defn around-element []
   (visually-select seek.current-element-boundaries {:inside false}))
 (defn in-element []
-  (visually-select seek.current-element-boundaries {:inside false}))
+  (visually-select seek.current-element-boundaries {:inside true}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

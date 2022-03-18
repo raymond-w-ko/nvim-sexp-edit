@@ -29,9 +29,9 @@
     candidate))
 
 (defn current-form-boundaries []
-  (let [{: begin : end} (current-node-of-type :form)]
-    [begin end]))
+  (let [{: begin : end : subtype} (current-node-of-type :form)]
+    [begin end subtype]))
 
 (defn current-element-boundaries []
-  (let [{: begin : end} (current-node-of-type :element)]
-    [begin end]))
+  (let [{: begin : end : subtype} (current-node-of-type :element)]
+    [begin end subtype]))
