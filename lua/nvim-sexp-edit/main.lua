@@ -43,6 +43,7 @@ local function visually_select(f, _1_)
     local _let_4_ = f()
     local begin = _let_4_[1]
     local _end = _let_4_[2]
+    local subtype = _let_4_[3]
     if (begin and _end) then
       if (mode == "v") then
         nvim.ex["normal!"]("v")
@@ -51,7 +52,7 @@ local function visually_select(f, _1_)
       do
         local x = a.dec(begin[2])
         local x0
-        if inside then
+        if (inside and (subtype == "string")) then
           x0 = a.inc(x)
         else
           x0 = x
@@ -61,7 +62,7 @@ local function visually_select(f, _1_)
       nvim.ex["normal!"]("v")
       local x = a.dec(_end[2])
       local x0
-      if inside then
+      if (inside and (subtype == "string")) then
         x0 = a.dec(x)
       else
         x0 = x
@@ -86,7 +87,7 @@ local function around_element()
 end
 _2amodule_2a["around-element"] = around_element
 local function in_element()
-  return visually_select(seek["current-element-boundaries"], {inside = false})
+  return visually_select(seek["current-element-boundaries"], {inside = true})
 end
 _2amodule_2a["in-element"] = in_element
 local function add_char(y, x, ch)
