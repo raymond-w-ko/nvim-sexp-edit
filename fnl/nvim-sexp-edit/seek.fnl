@@ -30,8 +30,8 @@
 
 (defn current-form-boundaries []
   (let [{: begin : end : subtype} (current-node-of-type :form)]
-    [begin end subtype]))
+    [begin end :form subtype]))
 
 (defn current-element-boundaries []
   (let [{: begin : end : subtype} (current-node-of-type :element)]
-    [begin end subtype]))
+    [begin end :element subtype]))

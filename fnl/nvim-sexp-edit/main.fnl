@@ -24,17 +24,19 @@
 
 (defn visually-select [f {: inside}]
   (let [{: mode} (nvim.get_mode)
-        [begin end subtype] (f)]
+        [begin end type subtype] (f)
+        allow-inside (or (= type :form)
+                         (= subtype :string))]
     (when (and begin end)
       (when (= mode "v") (nvim.ex.normal! "v"))
       (let [x (a.dec (. begin 2))
-            x (if (and inside (= subtype :string))
+            x (if (and inside allow-inside)
                 (a.inc x)
                 x)]
         (nvim.win_set_cursor 0 [(. begin 1) x]))
       (nvim.ex.normal! "v")
       (let [x (a.dec (. end 2))
-            x (if (and inside (= subtype :string))
+            x (if (and inside allow-inside)
                 (a.dec x)
                 x)]
         (nvim.win_set_cursor 0 [(. end 1) x]))))
