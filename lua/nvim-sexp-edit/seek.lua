@@ -53,7 +53,7 @@ local function current_form_boundaries()
   local begin = _let_8_["begin"]
   local _end = _let_8_["end"]
   local subtype = _let_8_["subtype"]
-  return {begin, _end, subtype}
+  return {begin, _end, "form", subtype}
 end
 _2amodule_2a["current-form-boundaries"] = current_form_boundaries
 local function current_element_boundaries()
@@ -61,7 +61,7 @@ local function current_element_boundaries()
   local begin = _let_9_["begin"]
   local _end = _let_9_["end"]
   local subtype = _let_9_["subtype"]
-  return {begin, _end, subtype}
+  return {begin, _end, "element", subtype}
 end
 _2amodule_2a["current-element-boundaries"] = current_element_boundaries
 return _2amodule_2a

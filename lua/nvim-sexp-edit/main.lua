@@ -43,7 +43,9 @@ local function visually_select(f, _1_)
     local _let_4_ = f()
     local begin = _let_4_[1]
     local _end = _let_4_[2]
-    local subtype = _let_4_[3]
+    local type = _let_4_[3]
+    local subtype = _let_4_[4]
+    local allow_inside = ((type == "form") or (subtype == "string"))
     if (begin and _end) then
       if (mode == "v") then
         nvim.ex["normal!"]("v")
@@ -52,7 +54,7 @@ local function visually_select(f, _1_)
       do
         local x = a.dec(begin[2])
         local x0
-        if (inside and (subtype == "string")) then
+        if (inside and allow_inside) then
           x0 = a.inc(x)
         else
           x0 = x
@@ -62,7 +64,7 @@ local function visually_select(f, _1_)
       nvim.ex["normal!"]("v")
       local x = a.dec(_end[2])
       local x0
-      if (inside and (subtype == "string")) then
+      if (inside and allow_inside) then
         x0 = a.dec(x)
       else
         x0 = x
